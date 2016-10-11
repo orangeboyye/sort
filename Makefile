@@ -6,7 +6,6 @@ APP := test
 OBJS := test.o sort.o
 
 all : $(APP)
-	./$(APP)
 
 $(APP) : $(OBJS)
 
