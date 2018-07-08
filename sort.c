@@ -2,14 +2,13 @@
 
 void select_sort(int arr[], int nr)
 {
-	int tmp, max;
-	for (int i = 0; i < nr-1; ++i)
-	{
-		max = i;
-		for (int j = i+1; j < nr; ++j)
-			if (arr[max] > arr[j])
+	for(int i = 0; i < nr; i++){
+		int max = i;
+		for(int j = i+1; j < nr; j++){
+			if(arr[max] > arr[j])
 				max = j;
-		tmp = arr[i];
+		}
+		int tmp = arr[i];
 		arr[i] = arr[max];
 		arr[max] = tmp;
 	}
@@ -41,18 +40,16 @@ void select_2way_sort(int arr[], int nr)
 
 void bubble_sort(int arr[], int nr)
 {
-	int tmp, pos;
-	for (int i = 0; i < nr-1; )
-	{
-		pos = nr-1;
-		for (int j = nr-1; j > i; --j)
-			if (arr[j] < arr[j-1])
-			{
-				tmp = arr[j];
+	for(int i = 0; i < nr-1;){
+		int pos = nr-1;
+		for(int j = nr-1; j > i; j--){
+			if(arr[j] < arr[j-1]){
+				int tmp = arr[j];
 				arr[j] = arr[j-1];
 				arr[j-1] = tmp;
 				pos = j;
 			}
+		}
 		i = pos;
 	}
 }
@@ -89,10 +86,9 @@ void bubble_2way_sort(int arr[], int nr)
 
 void insert_sort(int arr[], int nr)
 {
-	for (int i = 1; i < nr; ++i)
-	{
+	for(int i = 1; i < nr; i++){
 		int j, key = arr[i];
-		for (j = i; j > 0 && arr[j-1] > key; --j)
+		for(j = i; j > 0 && arr[j-1] > key; j--)
 			arr[j] = arr[j-1];
 		arr[j] = key;
 	}
@@ -137,35 +133,37 @@ void insert_2way_sort(int arr[], int nr)
 		arr[i] = tmp[(first+i)%nr];
 }
 
-static void heap_adjust(int arr[], int nr, int parent)
+static void heap_adjust(int arr[], int length, int node)
 {
-	int key = arr[parent];
-	int child = parent*2 + 1;
-	while(child < nr)
-	{
-		if (child+1 < nr && arr[child] < arr[child+1])
-			child++;
-		if (key > arr[child])
+	int key = arr[node];
+	while(1){
+		int child = node*2 + 1;
+		if(child >= length)
 			break;
-		arr[parent] = arr[child];
-		parent = child;
-		child = parent*2 + 1;
+
+		if(child+1 < length && arr[child+1] > arr[child])
+			child++;
+		if(arr[child] <= key)
+			break;
+
+		arr[node] = arr[child];
+		node = child; 
 	}
-	arr[parent] = key;
+	arr[node] = key;
 }
 
 void heap_sort(int arr[], int nr)
 {
-	for (int i = nr/2 - 1; i >= 0; --i)
-		heap_adjust(arr, nr, i);
-	int tmp;
-	for (int i = nr-1; i > 0; --i)
-	{
-		tmp = arr[i];
-		arr[i] = arr[0];
-		arr[0] = tmp;
-		heap_adjust(arr, i, 0);
+	for(int node = nr/2 - 1; node >= 0; node--)
+		heap_adjust(arr, nr, node);
+
+	for(int length = nr-1; length > 0; length--){
+		int tmp = arr[0];
+		arr[0] = arr[length];
+		arr[length] = tmp;
+		heap_adjust(arr, length, 0);
 	}
+	
 }
 
 static void swap(int arr[], int i, int j)
@@ -177,30 +175,27 @@ static void swap(int arr[], int i, int j)
 
 void quick_sort(int arr[], int left, int right)
 {
-	if (left >= right)
+	if(left >= right)
 		return;
+
 	swap(arr, left, (left+right)/2);
+	int index = left;
+	for(int i = left+1; i <= right; i++)
+		if(arr[i] < arr[left])
+			swap(arr, ++index, i);
+	swap(arr, left, index);
 
-	int mid = left;
-	for (int i = left+1; i <= right; ++i)
-		if (arr[i] < arr[left])
-			swap(arr, ++mid, i);
-	swap(arr, mid, left);
-
-	quick_sort(arr, left, mid-1);
-	quick_sort(arr, mid+1, right);
+	quick_sort(arr, left, index-1);
+	quick_sort(arr, index+1, right);
 }
 
 void shell_sort(int arr[], int nr)
 {
-	for (int d = nr/2; d > 0; d /= 2)
-	{
-		if (d%2 == 0)
-			d++;
-		for (int i = d; i < nr; ++i)
-		{
+	for(int d = nr/2; d > 0; d /= 2){
+		d |= 1;
+		for(int i = d; i < nr; i++){
 			int j, key = arr[i];
-			for (j = i; j >= d && arr[j-d] > key ; j -= d)
+			for(j = i; j >=d && arr[j-d] > key; j -= d)
 				arr[j] = arr[j-d];
 			arr[j] = key;
 		}
@@ -209,32 +204,39 @@ void shell_sort(int arr[], int nr)
 
 void merge_sort(int arr[], int left, int right)
 {
-	if (left >= right)
+	if(left >= right)
 		return;
 	int mid = (left+right)/2;
 	merge_sort(arr, left, mid);
 	merge_sort(arr, mid+1, right);
 
-	int count = right-left+1, tmp[count];
-	for (int i = 0; i < count; ++i)
+	int count = right - left + 1;
+	int tmp[count];
+	for(int i = 0; i < count; i++)
 		tmp[i] = arr[left+i];
-	int j = 0, jmax = mid-left, k = jmax+1;
-	for (int i = left; i <= right; ++i)
-		arr[i] = j>jmax || k<count && tmp[j] > tmp[k] ? tmp[k++] : tmp[j++];
+
+	int j = 0, jmax = mid-left+1;
+	int k = jmax, kmax = count;
+	for(int i = left; i <= right; i++)
+		arr[i] = j >= jmax || (k < kmax && tmp[k] < tmp[j]) ? tmp[k++] : tmp[j++];
 }
 
 void count_sort(int arr[], int nr)
 {
 	int max = arr[0];
-	for (int i = 1; i < nr; ++i)
-		if (max < arr[i])
+	for(int i = 1; i < nr; i++)
+		if(max < arr[i])
 			max = arr[i];
+
 	int counts[++max];
-	for (int i = 0; i < max; ++i)
+	for(int i = 0; i < max; i++)
 		counts[i] = 0;
-	for (int i = 0; i < nr; ++i)
+
+	for(int i = 0; i < nr; i++)
 		counts[arr[i]]++;
-	for (int i = 0, j = 0; i < max; ++i)
+
+	for(int i = 0, j = 0; i < max; i++)
 		while(counts[i]-- > 0)
 			arr[j++] = i;
 }
+
