@@ -7,11 +7,14 @@ OBJS := test.o sort.o
 
 all : $(APP)
 
+run : $(APP)
+	./$(APP)
+
 $(APP) : $(OBJS)
 
 $(OBJS) : sort.h
 
 .PHONY :
 clean:
-	rm -f *.o *.exe
+	rm -f *.o *.exe test
 
