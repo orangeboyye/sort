@@ -231,12 +231,12 @@ void merge_sort(int arr[], int nr)
 	do_merge_sort(arr, 0, nr-1);
 }
 
-void count_sort2(int arr[], int nr)
+void count_sort(int arr[], int nr)
 {
 	int arr2[nr];
 	int max = arr[0];
 	int min = arr[0];
-	for(int i = 1; i < nr; i++){
+	for(int i = 0; i < nr; i++){
 		arr2[i] = arr[i];
 		if(max < arr[i])
 			max = arr[i];
@@ -251,16 +251,16 @@ void count_sort2(int arr[], int nr)
 		counts[i] = 0;
 
 	for(int i = 0; i < nr; i++)
-		counts[arr[i] - min]++;
+		counts[arr2[i] - min]++;
 
 	for(int i = 1; i < length; i++)
 		counts[i] += counts[i-1];
 
 	for(int i = nr-1; i >= 0; i--)
-		arr[counts[arr2[i]]--] = arr2[i];
+		arr[--counts[arr2[i]-min]] = arr2[i];
 }
 
-void count_sort(int arr[], int nr)
+void count_sort2(int arr[], int nr)
 {
 	int max = arr[0];
 	int min = arr[0];
