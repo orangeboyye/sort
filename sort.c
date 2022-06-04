@@ -2,15 +2,15 @@
 
 void select_sort(int arr[], int nr)
 {
-	for(int i = 0; i < nr; i++){
-		int max = i;
+	for(int i = 0; i < nr-1; i++){
+		int min = i;
 		for(int j = i+1; j < nr; j++){
-			if(arr[max] > arr[j])
-				max = j;
+			if(arr[j] < arr[min])
+				min = j;
 		}
 		int tmp = arr[i];
-		arr[i] = arr[max];
-		arr[max] = tmp;
+		arr[i] = arr[min];
+		arr[min] = tmp;
 	}
 }
 
@@ -173,7 +173,7 @@ static void swap(int arr[], int i, int j)
 	arr[j] = tmp;
 }
 
-void quick_sort(int arr[], int left, int right)
+static void do_quick_sort(int arr[], int left, int right)
 {
 	if(left >= right)
 		return;
@@ -185,8 +185,13 @@ void quick_sort(int arr[], int left, int right)
 			swap(arr, ++index, i);
 	swap(arr, left, index);
 
-	quick_sort(arr, left, index-1);
-	quick_sort(arr, index+1, right);
+	do_quick_sort(arr, left, index-1);
+	do_quick_sort(arr, index+1, right);
+}
+
+void quick_sort(int arr[], int nr)
+{
+	do_quick_sort(arr, 0, nr-1);
 }
 
 void shell_sort(int arr[], int nr)
@@ -202,13 +207,13 @@ void shell_sort(int arr[], int nr)
 	}
 }
 
-void merge_sort(int arr[], int left, int right)
+static void do_merge_sort(int arr[], int left, int right)
 {
 	if(left >= right)
 		return;
 	int mid = (left+right)/2;
-	merge_sort(arr, left, mid);
-	merge_sort(arr, mid+1, right);
+	do_merge_sort(arr, left, mid);
+	do_merge_sort(arr, mid+1, right);
 
 	int count = right - left + 1;
 	int tmp[count];
@@ -221,22 +226,72 @@ void merge_sort(int arr[], int left, int right)
 		arr[i] = j >= jmax || (k < kmax && tmp[k] < tmp[j]) ? tmp[k++] : tmp[j++];
 }
 
+void merge_sort(int arr[], int nr)
+{
+	do_merge_sort(arr, 0, nr-1);
+}
+
 void count_sort(int arr[], int nr)
+{
+	int max = arr[0];
+	int min = arr[0];
+	for(int i = 1; i < nr; i++){
+		if(max < arr[i])
+			max = arr[i];
+		if(min > arr[i])
+			min = arr[i];
+		
+	}
+
+	int length = max - min + 1;
+	int counts[length];
+	for(int i = 0; i < length; i++)
+		counts[i] = 0;
+
+	for(int i = 0; i < nr; i++)
+		counts[arr[i] - min]++;
+
+	for(int i = 0, j = 0; i < length; i++)
+		while(counts[i]-- > 0)
+			arr[j++] = i + min;
+}
+
+void radix_sort(int arr[], int nr)
 {
 	int max = arr[0];
 	for(int i = 1; i < nr; i++)
 		if(max < arr[i])
 			max = arr[i];
 
-	int counts[++max];
-	for(int i = 0; i < max; i++)
-		counts[i] = 0;
+	int d = 1;
+	while((max = max >> 4) != 0 ) d++;
 
-	for(int i = 0; i < nr; i++)
-		counts[arr[i]]++;
-
-	for(int i = 0, j = 0; i < max; i++)
-		while(counts[i]-- > 0)
-			arr[j++] = i;
+	for(int k = 0; k < d; k++){
+		for(int i = 1; i < nr; i++){
+			int j, key = arr[i];
+			for(j = i; j > 0 && ((arr[j-1] >> 4*k) & 0x0F) > ((key >> 4*k) & 0x0F); j--)
+				arr[j] = arr[j-1];
+			arr[j] = key;
+		}
+	}
 }
 
+void radixmsb_sort(int arr[], int nr)
+{
+	int max = arr[0];
+	for(int i = 1; i < nr; i++)
+		if(max < arr[i])
+			max = arr[i];
+
+	int d = 1;
+	while((max = max >> 4) != 0 ) d++;
+
+	for(int k = d-1; k >= 0; k--){
+		for(int i = 1; i < nr; i++){
+			int j, key = arr[i];
+			for(j = i; j > 0 && ((arr[j-1] >> 4*k) & 0x0F) > ((key >> 4*k) & 0x0F); j--)
+				arr[j] = arr[j-1];
+			arr[j] = key;
+		}
+	}
+}
