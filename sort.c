@@ -242,7 +242,6 @@ void count_sort(int arr[], int nr)
 			max = arr[i];
 		if(min > arr[i])
 			min = arr[i];
-		
 	}
 
 	int length = max - min + 1;
@@ -260,7 +259,7 @@ void count_sort(int arr[], int nr)
 		arr[--counts[arr2[i]-min]] = arr2[i];
 }
 
-void count_sort2(int arr[], int nr)
+void count_sort_unstable(int arr[], int nr)
 {
 	int max = arr[0];
 	int min = arr[0];
@@ -269,7 +268,6 @@ void count_sort2(int arr[], int nr)
 			max = arr[i];
 		if(min > arr[i])
 			min = arr[i];
-		
 	}
 
 	int length = max - min + 1;
@@ -315,12 +313,23 @@ void radixmsb_sort(int arr[], int nr)
 	int d = 1;
 	while((max = max >> 4) != 0 ) d++;
 
-	for(int k = d-1; k >= 0; k--){
-		for(int i = 1; i < nr; i++){
-			int j, key = arr[i];
-			for(j = i; j > 0 && ((arr[j-1] >> 4*k) & 0x0F) > ((key >> 4*k) & 0x0F); j--)
-				arr[j] = arr[j-1];
-			arr[j] = key;
-		}
+	for(int k = 0; k < d; k++){
+		int arr2[nr];
+		for(int i = 0; i < nr; i++)
+			arr2[i] = arr[i];
+
+		int length = 1 << 4;
+		int counts[length];
+		for(int i = 0; i < length; i++)
+			counts[i] = 0;
+
+		for(int i = 0; i < nr; i++)
+			counts[(arr2[i] >> 4*k) & 0x0F]++;
+
+		for(int i = 1; i < length; i++)
+			counts[i] += counts[i-1];
+
+		for(int i = nr-1; i >= 0; i--)
+			arr[--counts[(arr2[i] >> 4*k) & 0x0F]] = arr2[i];
 	}
 }
