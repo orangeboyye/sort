@@ -27,7 +27,6 @@ struct sort_func_entry sort_funcs[] = {
 	ENTRY(merge_sort),
 	ENTRY(count_sort),
 	ENTRY(radix_sort),
-	ENTRY(radixmsb_sort),
 };
 
 int sort_funcs_nr = sizeof(sort_funcs)/sizeof(sort_funcs[0]);

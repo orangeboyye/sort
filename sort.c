@@ -294,26 +294,6 @@ void radix_sort(int arr[], int nr)
 	while((max = max >> 4) != 0 ) d++;
 
 	for(int k = 0; k < d; k++){
-		for(int i = 1; i < nr; i++){
-			int j, key = arr[i];
-			for(j = i; j > 0 && ((arr[j-1] >> 4*k) & 0x0F) > ((key >> 4*k) & 0x0F); j--)
-				arr[j] = arr[j-1];
-			arr[j] = key;
-		}
-	}
-}
-
-void radixmsb_sort(int arr[], int nr)
-{
-	int max = arr[0];
-	for(int i = 1; i < nr; i++)
-		if(max < arr[i])
-			max = arr[i];
-
-	int d = 1;
-	while((max = max >> 4) != 0 ) d++;
-
-	for(int k = 0; k < d; k++){
 		int arr2[nr];
 		for(int i = 0; i < nr; i++)
 			arr2[i] = arr[i];
