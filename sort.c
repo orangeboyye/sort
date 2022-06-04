@@ -231,6 +231,35 @@ void merge_sort(int arr[], int nr)
 	do_merge_sort(arr, 0, nr-1);
 }
 
+void count_sort2(int arr[], int nr)
+{
+	int arr2[nr];
+	int max = arr[0];
+	int min = arr[0];
+	for(int i = 1; i < nr; i++){
+		arr2[i] = arr[i];
+		if(max < arr[i])
+			max = arr[i];
+		if(min > arr[i])
+			min = arr[i];
+		
+	}
+
+	int length = max - min + 1;
+	int counts[length];
+	for(int i = 0; i < length; i++)
+		counts[i] = 0;
+
+	for(int i = 0; i < nr; i++)
+		counts[arr[i] - min]++;
+
+	for(int i = 1; i < length; i++)
+		counts[i] += counts[i-1];
+
+	for(int i = nr-1; i >= 0; i--)
+		arr[counts[arr2[i]]--] = arr2[i];
+}
+
 void count_sort(int arr[], int nr)
 {
 	int max = arr[0];
