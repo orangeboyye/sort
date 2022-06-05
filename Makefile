@@ -14,6 +14,7 @@ $(APP) : $(OBJS)
 
 $(OBJS) : sort.h
 
+
 .PHONY :
 clean:
 	rm -f *.o *.exe test
