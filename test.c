@@ -61,7 +61,7 @@ int main(int argc, char const *argv[])
 
 	int random_ints[count];
 	srand(time(NULL));
-	printf("create an random array\n");
+	printf("create a random array\n");
 	for (int i = 0; i < count; ++i)
 		random_ints[i] = rand()%count + 1;
 	for (int i = 0; i < count; ++i)
