@@ -56,8 +56,8 @@ int main(int argc, char const *argv[])
 	int count = 10;
 	if (argc > 1)
 		count = atoi(argv[1]);
-	if (count < 2)
-		count = 2;
+	if (count < 1)
+		count = 1;
 
 	int random_ints[count];
 	srand(time(NULL));
